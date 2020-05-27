@@ -65,7 +65,7 @@ class Example:
         data = kwargs.get('data', None)
         random_variable = random.randint(1, random_factor)
         if random_factor / random_variable == 1:
-            self.sic.say_animated('Passed randomiser')
+            print('Passed randomiser')
             if trigger == 'players_turn':
                 self.sic.say_animated(random.choice(PLAYERS_TURN_STRING))
             elif trigger == 'start':
@@ -100,6 +100,8 @@ if NAO_IS_OPPONENT == 1:
     EYE_COLOR = 'red'
 else:
     EYE_COLOR = 'green'
+nao.sic.set_eye_color(EYE_COLOR)  # TODO check if this works
+
 # Randomiser settings 1 = always trigger, 2 = 50% triggered, 3 = 33%, etc
 START_TRIGGER_FACTOR = 1
 MOVE_RECOMMENDATION_TRIGGER_FACTOR = 1
