@@ -5,10 +5,101 @@ import sys
 import math
 from time import sleep
 
+#Start of robot part
+
+import threading
+from social_interaction_cloud.basic_connector import BasicSICConnector
+from time import sleep
+
+
+class Example:
+
+    def __init__(self, server_ip, robot):
+        self.sic = BasicSICConnector(server_ip, robot)
+
+        self.awake_lock = threading.Event()
+
+    def start(self):
+        # active Social Interaction Cloud connection
+        self.sic.start()
+
+        # set language to English
+        self.sic.set_language('nl-NL')
+
+        # stand up and wait until this action is done (whenever the callback function self.awake is called)
+        self.sic.wake_up(self.awake)
+        self.awake_lock.wait()  # see https://docs.python.org/3/library/threading.html#event-objects
+
+        self.sic.say_animated('You can tickle me by touching my head.')
+        # Execute that_tickles call each time the middle tactile is touched
+        self.sic.subscribe_touch_listener('MiddleTactilTouched', self.that_tickles)
+
+        # You have 10 seconds to tickle the robot
+        #sleep(10)
+
+    def stop(self):
+        # Unsubscribe the listener if you don't need it anymore.
+        self.sic.unsubscribe_touch_listener('MiddleTactilTouched')
+
+        # Go to rest mode
+        self.sic.rest()
+
+        # close the Social Interaction Cloud connection
+        self.sic.stop()
+
+    def awake(self):
+        """Callback function for wake_up action. Called only once.
+        It lifts the lock, making the program continue from self.awake_lock.wait()"""
+
+        self.awake_lock.set()
+
+    def that_tickles(self):
+        """Callback function for touch listener. Everytime the MiddleTactilTouched event is generated, this
+         callback function is called, making the robot say 'That tickles!'"""
+
+        self.sic.say_animated('That tickles!')
+
+    def push_data(self, trigger, random_factor, **kwargs):
+        if random_factor == 0:
+            return
+        data = kwargs.get('data', None)
+        random_variable = random.randint(1, random_factor)
+        if random_factor / random_variable == 1:
+            self.sic.say_animated('Passed randomiser')
+            if trigger == 'players_turn':
+                self.sic.say_animated(random.choice(PLAYERS_TURN_STRING))
+            elif trigger == 'start':
+                self.sic.say_animated(random.choice(START_GAME_STRING))
+                if NAO_IS_OPPONENT:
+                    self.sic.say_animated(random.choice(START_GAME_WITH_NAO_STRING))
+                else:
+                    self.sic.say_animated(random.choice(START_GAME_AGAINST_NAO_STRING))
+            elif trigger == 'move_recommendation':
+                data = int(data) + 1  # Add 1 to make it a human number
+                self.sic.set_eye_color(self, 'blue')
+                self.sic.say_animated('Even denken')
+                sleep(random.randint(1, 3))
+                self.sic.say_animated('Ik raad aan om in kolom ' + str(data) + ' te zetten')
+                self.sic.set_eye_color(self, EYE_COLOR)  # TODO wait for finish
+            elif trigger == 'game_over':
+                if data == 'lost':
+                    self.sic.say_animated(random.choice(END_GAME_LOSS_STRING))
+                elif data == 'won':
+                    self.sic.say_animated(random.choice(END_GAME_WIN_STRING))
+
+
+nao = Example('192.168.0.105', 'nao')
+nao.start()
+
+# End of robot part
+
 # Variables
 NAO_IS_OPPONENT = int(input("Voer 1 in om tegen Nao te spelen, voer 0 in om met Nao aan jou kant te spelen als vriend: "))
 GAME_DIFFICULTY = int(input("Voer een getal in tussen 1 (makkelijk) en 5 (moeilijk) om de moeilijkheidsgraad in te stellen: "))
-
+if NAO_IS_OPPONENT == 1:
+    EYE_COLOR = 'red'
+else:
+    EYE_COLOR = 'green'
 # Randomiser settings 1 = always trigger, 2 = 50% triggered, 3 = 33%, etc
 START_TRIGGER_FACTOR = 1
 MOVE_RECOMMENDATION_TRIGGER_FACTOR = 1
@@ -23,31 +114,6 @@ START_GAME_AGAINST_NAO_STRING = ['Veel succes', 'Ik ben er klaar voor']
 PLAYERS_TURN_STRING = ['Jij bent aan de beurt']
 END_GAME_WIN_STRING = ['Goed gedaan!', 'Je hebt goed gespeeld', 'Volgende keer een niveau hoger?']
 END_GAME_LOSS_STRING = ['Volgende keer beter!', 'Jammer! Je kan volgende keer ook een niveau lager spelen']
-
-
-def push_data(trigger, random_factor, **kwargs):
-    if random_factor == 0:
-        return
-    data = kwargs.get('data', None)
-    random_variable = random.randint(1, random_factor)
-    if random_factor / random_variable == 1:
-        print('Passed randomiser')
-        if trigger == 'players_turn':
-            print(random.choice(PLAYERS_TURN_STRING))
-        elif trigger == 'start':
-            print(random.choice(START_GAME_STRING))
-            if NAO_IS_OPPONENT:
-                print(random.choice(START_GAME_WITH_NAO_STRING))
-            else:
-                print(random.choice(START_GAME_AGAINST_NAO_STRING))
-        elif trigger == 'move_recommendation':
-            data = int(data)+1  # Add 1 to make it a human number
-            print('Ik raad aan om in kolom ' + str(data) + ' te zetten')
-        elif trigger == 'game_over':
-            if data == 'lost':
-                print(random.choice(END_GAME_LOSS_STRING))
-            elif data == 'won':
-                print(random.choice(END_GAME_WIN_STRING))
 
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
@@ -69,7 +135,7 @@ WINDOW_LENGTH = 4
 
 def create_board():
     board = np.zeros((ROW_COUNT, COLUMN_COUNT))
-    push_data('start', START_TRIGGER_FACTOR)
+    nao.push_data('start', START_TRIGGER_FACTOR)
     return board
 
 
@@ -296,9 +362,10 @@ while not game_over:
         if event.type == pygame.KEYDOWN:
             if event.key == ord("a"):
                 col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
-                push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR, data=col)
+                nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR, data=col)
 
         if event.type == pygame.QUIT:
+            nao.stop()
             sys.exit()
 
         if event.type == pygame.MOUSEMOTION:
@@ -323,7 +390,7 @@ while not game_over:
 
                     if winning_move(board, PLAYER_PIECE):
                         label = myfont.render("Jij hebt gewonnen!!", 1, RED)
-                        push_data('game_over', GAME_OVER_WON_TRIGGER_FACTOR, data='won')
+                        nao.push_data('game_over', GAME_OVER_WON_TRIGGER_FACTOR, data='won')
                         screen.blit(label, (40, 10))
                         game_over = True
 
@@ -349,7 +416,7 @@ while not game_over:
 
             if winning_move(board, AI_PIECE):
                 label = myfont.render("Je hebt verloren, volgende keer beter!", 1, YELLOW)
-                push_data('game_over', GAME_OVER_LOST_TRIGGER_FACTOR, data='lost')
+                nao.push_data('game_over', GAME_OVER_LOST_TRIGGER_FACTOR, data='lost')
                 screen.blit(label, (40, 10))
                 game_over = True
 
@@ -358,8 +425,9 @@ while not game_over:
 
             turn += 1
             turn = turn % 2
-            push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
+            nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
 
     if game_over:
         print_board(board)
+        nao.stop()
         pygame.time.wait(3000)
