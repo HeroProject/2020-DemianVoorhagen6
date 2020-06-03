@@ -16,48 +16,40 @@ class Example:
 
     def __init__(self, server_ip, robot):
         self.sic = BasicSICConnector(server_ip, robot)
-
         self.awake_lock = threading.Event()
 
     def start(self):
-        # active Social Interaction Cloud connection
         self.sic.start()
-
-        # set language to English
         self.sic.set_language('nl-NL')
-
         # stand up and wait until this action is done (whenever the callback function self.awake is called)
-        self.sic.wake_up(self.awake)
-        self.awake_lock.wait()  # see https://docs.python.org/3/library/threading.html#event-objects
-
-        self.sic.say_animated('You can tickle me by touching my head.')
+        self.action_runner.run_waiting_action('wake_up')
+        #wake_up_action = self.action_factory.build_waiting_action('wake_up', additional_callback=awake)
+        #wake_up_action.perform().wait()
+        #self.awake_lock.wait()  # see https://docs.python.org/3/library/threading.html#event-objects
+        self.sic.say_animated('Ik ben aan het op starten.')
         # Execute that_tickles call each time the middle tactile is touched
         self.sic.subscribe_touch_listener('MiddleTactilTouched', self.that_tickles)
-
-        # You have 10 seconds to tickle the robot
-        #sleep(10)
 
     def stop(self):
         # Unsubscribe the listener if you don't need it anymore.
         self.sic.unsubscribe_touch_listener('MiddleTactilTouched')
-
         # Go to rest mode
         self.sic.rest()
-
         # close the Social Interaction Cloud connection
         self.sic.stop()
 
     def awake(self):
         """Callback function for wake_up action. Called only once.
         It lifts the lock, making the program continue from self.awake_lock.wait()"""
-
         self.awake_lock.set()
 
     def that_tickles(self):
         """Callback function for touch listener. Everytime the MiddleTactilTouched event is generated, this
          callback function is called, making the robot say 'That tickles!'"""
-
         self.sic.say_animated('That tickles!')
+
+    def set_eye_color(self, color):
+        self.sic.set_eye_color(color)
 
     def push_data(self, trigger, random_factor, **kwargs):
         if random_factor == 0:
@@ -76,11 +68,16 @@ class Example:
                     self.sic.say_animated(random.choice(START_GAME_AGAINST_NAO_STRING))
             elif trigger == 'move_recommendation':
                 data = int(data) + 1  # Add 1 to make it a human number
-                self.sic.set_eye_color(self, 'blue')
-                self.sic.say_animated('Even denken')
-                sleep(random.randint(1, 3))
-                self.sic.say_animated('Ik raad aan om in kolom ' + str(data) + ' te zetten')
-                self.sic.set_eye_color(self, EYE_COLOR)  # TODO wait for finish
+                # self.sic.set_eye_color(self, 'blue')
+                self.action_runner.load_waiting_action('set_eye_color', 'blue')
+                # self.sic.say_animated('Even denken')
+                self.action_runner.load_waiting_action('say', 'Even denken')
+                self.action_runner.run_loaded_actions()
+                sleep(random.randint(2, 4))
+                # self.sic.say_animated('Ik raad aan om in kolom ' + str(data) + ' te zetten')
+                self.action_runner.load_waiting_action('say', 'Ik raad aan om in kolom ' + str(data) + ' te zetten')
+                self.action_runner.run_loaded_actions()
+                self.sic.set_eye_color(self, EYE_COLOR)
             elif trigger == 'game_over':
                 if data == 'lost':
                     self.sic.say_animated(random.choice(END_GAME_LOSS_STRING))
@@ -100,7 +97,7 @@ if NAO_IS_OPPONENT == 1:
     EYE_COLOR = 'red'
 else:
     EYE_COLOR = 'green'
-nao.sic.set_eye_color(EYE_COLOR)  # TODO check if this works
+nao.set_eye_color(EYE_COLOR)
 
 # Randomiser settings 1 = always trigger, 2 = 50% triggered, 3 = 33%, etc
 START_TRIGGER_FACTOR = 1
