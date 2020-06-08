@@ -7,8 +7,8 @@ from time import sleep
 
 #Start of robot part
 
-import threading
-from social_interaction_cloud.basic_connector import BasicSICConnector
+from social_interaction_cloud.basic_connector import BasicSICConnector, BasicNaoPosture
+from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
 
@@ -16,37 +16,31 @@ class Example:
 
     def __init__(self, server_ip, robot):
         self.sic = BasicSICConnector(server_ip, robot)
-        self.awake_lock = threading.Event()
+        self.action_runner = ActionRunner(self.sic)
 
     def start(self):
         self.sic.start()
-        self.sic.set_language('nl-NL')
-        # stand up and wait until this action is done (whenever the callback function self.awake is called)
-        self.action_runner.run_waiting_action('wake_up')
-        #wake_up_action = self.action_factory.build_waiting_action('wake_up', additional_callback=awake)
-        #wake_up_action.perform().wait()
-        #self.awake_lock.wait()  # see https://docs.python.org/3/library/threading.html#event-objects
+        self.action_runner.load_waiting_action('set_language', 'nl-NL')
+        self.action_runner.load_waiting_action('wake_up')
+        self.action_runner.run_loaded_actions()
+        self.action_runner.run_waiting_action('set_breathing', True)
         self.sic.say_animated('Ik ben aan het op starten.')
+        #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.LYINGBACK)
+        #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.STAND)
         # Execute that_tickles call each time the middle tactile is touched
-        self.sic.subscribe_touch_listener('MiddleTactilTouched', self.that_tickles)
+        self.sic.subscribe_touch_listener('MiddleTactilTouched', self.give_advice)
 
     def stop(self):
-        # Unsubscribe the listener if you don't need it anymore.
         self.sic.unsubscribe_touch_listener('MiddleTactilTouched')
-        # Go to rest mode
         self.sic.rest()
-        # close the Social Interaction Cloud connection
         self.sic.stop()
 
-    def awake(self):
-        """Callback function for wake_up action. Called only once.
-        It lifts the lock, making the program continue from self.awake_lock.wait()"""
-        self.awake_lock.set()
 
-    def that_tickles(self):
+    def give_advice(self):
         """Callback function for touch listener. Everytime the MiddleTactilTouched event is generated, this
          callback function is called, making the robot say 'That tickles!'"""
-        self.sic.say_animated('That tickles!')
+        col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
+        self.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR, data=col)
 
     def set_eye_color(self, color):
         self.sic.set_eye_color(color)
@@ -57,27 +51,31 @@ class Example:
         data = kwargs.get('data', None)
         random_variable = random.randint(1, random_factor)
         if random_factor / random_variable == 1:
-            print('Passed randomiser')
             if trigger == 'players_turn':
-                self.sic.say_animated(random.choice(PLAYERS_TURN_STRING))
+                self.action_runner.run_action('say_animated', random.choice(PLAYERS_TURN_STRING))
             elif trigger == 'start':
-                self.sic.say_animated(random.choice(START_GAME_STRING))
+                self.action_runner.run_action('say_animated', random.choice(START_GAME_STRING))
+                sleep(3)
+                self.action_runner.run_action('say', 'hoi')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'Center_Neutral_AFF_01')
+                sleep(3)
+                self.action_runner.run_action('say', 'hey')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'Center_Strong_AFF_06')
                 if NAO_IS_OPPONENT:
-                    self.sic.say_animated(random.choice(START_GAME_WITH_NAO_STRING))
+                    self.action_runner.run_action('say_animated', random.choice(START_GAME_WITH_NAO_STRING))
                 else:
-                    self.sic.say_animated(random.choice(START_GAME_AGAINST_NAO_STRING))
+                    self.action_runner.run_action('say_animated', random.choice(START_GAME_AGAINST_NAO_STRING))
             elif trigger == 'move_recommendation':
                 data = int(data) + 1  # Add 1 to make it a human number
-                # self.sic.set_eye_color(self, 'blue')
-                self.action_runner.load_waiting_action('set_eye_color', 'blue')
-                # self.sic.say_animated('Even denken')
-                self.action_runner.load_waiting_action('say', 'Even denken')
+                self.action_runner.run_action('set_eye_color', 'blue')
+                self.action_runner.run_action('say_animated', 'Even denken')
                 self.action_runner.run_loaded_actions()
                 sleep(random.randint(2, 4))
-                # self.sic.say_animated('Ik raad aan om in kolom ' + str(data) + ' te zetten')
-                self.action_runner.load_waiting_action('say', 'Ik raad aan om in kolom ' + str(data) + ' te zetten')
+                self.action_runner.load_waiting_action('say_animated', 'Ik raad aan om in kolom ' + str(data) + ' te zetten')
                 self.action_runner.run_loaded_actions()
-                self.sic.set_eye_color(self, EYE_COLOR)
+                self.action_runner.run_action('set_eye_color', EYE_COLOR)
             elif trigger == 'game_over':
                 if data == 'lost':
                     self.sic.say_animated(random.choice(END_GAME_LOSS_STRING))
@@ -90,15 +88,6 @@ nao.start()
 
 # End of robot part
 
-# Variables
-NAO_IS_OPPONENT = int(input("Voer 1 in om tegen Nao te spelen, voer 0 in om met Nao aan jou kant te spelen als vriend: "))
-GAME_DIFFICULTY = int(input("Voer een getal in tussen 1 (makkelijk) en 5 (moeilijk) om de moeilijkheidsgraad in te stellen: "))
-if NAO_IS_OPPONENT == 1:
-    EYE_COLOR = 'red'
-else:
-    EYE_COLOR = 'green'
-nao.set_eye_color(EYE_COLOR)
-
 # Randomiser settings 1 = always trigger, 2 = 50% triggered, 3 = 33%, etc
 START_TRIGGER_FACTOR = 1
 MOVE_RECOMMENDATION_TRIGGER_FACTOR = 1
@@ -110,7 +99,7 @@ PLAYERS_TURN_TRIGGER_FACTOR = 5
 START_GAME_STRING = ['Hallo, ik ben Nao, om advies te krijgen over een zet druk op a']
 START_GAME_WITH_NAO_STRING = ['Ik heb er zin in', 'We pakken hem']
 START_GAME_AGAINST_NAO_STRING = ['Veel succes', 'Ik ben er klaar voor']
-PLAYERS_TURN_STRING = ['Jij bent aan de beurt']
+PLAYERS_TURN_STRING = ['Jij bent aan de beurt', 'Jij mag nu', 'Nu ben jij aan zet']
 END_GAME_WIN_STRING = ['Goed gedaan!', 'Je hebt goed gespeeld', 'Volgende keer een niveau hoger?']
 END_GAME_LOSS_STRING = ['Volgende keer beter!', 'Jammer! Je kan volgende keer ook een niveau lager spelen']
 
@@ -332,6 +321,15 @@ def draw_board(board):
                     int(c * SQUARESIZE + SQUARESIZE / 2), height - int(r * SQUARESIZE + SQUARESIZE / 2)), RADIUS)
     pygame.display.update()
 
+
+# Variables
+NAO_IS_OPPONENT = int(input("Voer 1 in om tegen Nao te spelen, voer 0 in om met Nao aan jou kant te spelen als vriend: "))
+GAME_DIFFICULTY = int(input("Voer een getal in tussen 1 (makkelijk) en 5 (moeilijk) om de moeilijkheidsgraad in te stellen: "))
+if NAO_IS_OPPONENT == 1:
+    EYE_COLOR = str('magenta')
+else:
+    EYE_COLOR = str('green')
+nao.set_eye_color(EYE_COLOR)
 
 board = create_board()
 #print_board(board)
