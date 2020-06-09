@@ -1,0 +1,84 @@
+Nao said: Ik ben aan het op starten.
+Nao said: Hallo, ik ben Nao, om advies te krijgen over een zet druk op mijn hoofd
+Nao said: Ik heb er zin in
+Starting session 
+Game difficulty: 1
+Nao mode: 1
+Nao said: Jij mag nu
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 5 te zetten
+Nao said: Nu ben jij aan zet
+Nao said: Jammer! Je kan volgende keer ook een niveau lager spelen
+Moves made: 10
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 2. 0. 0. 0.]
+ [0. 1. 0. 2. 0. 0. 0.]
+ [1. 1. 0. 2. 0. 0. 0.]
+ [1. 1. 0. 2. 2. 0. 0.]]
+Game difficulty: 2
+Nao mode: 1
+Nao said: Jij bent aan de beurt
+Nao said: Jammer! Je kan volgende keer ook een niveau lager spelen
+Nao said: Jij bent aan de beurt
+Moves made: 14
+Winner: Computer
+Game: 
+[[1. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0.]
+ [2. 0. 0. 0. 2. 0. 0.]
+ [1. 0. 0. 0. 2. 0. 0.]
+ [1. 1. 0. 2. 2. 0. 0.]
+ [1. 1. 0. 2. 2. 0. 0.]]
+Game difficulty: 3
+Nao mode: 1
+Nao said: Nu ben jij aan zet
+Nao said: Jij mag nu
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 2 te zetten
+Nao said: Volgende keer beter!
+Moves made: 19
+Winner: Computer
+Game: 
+[[2. 2. 0. 0. 0. 0. 0.]
+ [1. 1. 0. 0. 0. 0. 0.]
+ [2. 2. 2. 0. 0. 0. 0.]
+ [1. 1. 2. 0. 0. 0. 0.]
+ [1. 1. 2. 2. 0. 0. 0.]
+ [1. 1. 2. 2. 0. 0. 1.]]
+Game difficulty: 4
+Nao mode: 1
+Nao said: Jij mag nu
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 1 te zetten
+Nao said: Jij mag nu
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 2 te zetten
+Nao said: Jammer! Je kan volgende keer ook een niveau lager spelen
+Moves made: 17
+Winner: Computer
+Game: 
+[[2. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0.]
+ [2. 0. 0. 2. 0. 0. 0.]
+ [1. 0. 0. 2. 0. 0. 0.]
+ [1. 2. 1. 2. 0. 0. 0.]
+ [1. 1. 1. 2. 2. 2. 1.]]
+Game difficulty: 5
+Nao mode: 1
+Nao said: Jij bent aan de beurt
+Nao said: Nu ben jij aan zet
+Nao said: Jij mag nu
+Nao said: Volgende keer beter!
+Moves made: 19
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [2. 1. 0. 0. 0. 0. 0.]
+ [2. 2. 0. 1. 0. 0. 0.]
+ [2. 1. 0. 2. 0. 0. 0.]
+ [2. 1. 0. 2. 1. 0. 0.]
+ [1. 1. 1. 2. 2. 2. 1.]]
+End of session 
