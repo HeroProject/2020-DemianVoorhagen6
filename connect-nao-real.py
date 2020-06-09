@@ -11,6 +11,10 @@ from social_interaction_cloud.basic_connector import BasicSICConnector, BasicNao
 from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
+# Variables
+NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as bystander
+GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
+PERSON_ID = int(input("Voer je proef persoon ID in of vraag deze aan de onderzoeker: "))
 
 class Example:
 
@@ -25,6 +29,9 @@ class Example:
         self.action_runner.run_loaded_actions()
         self.action_runner.run_waiting_action('set_breathing', True)
         self.sic.say_animated('Ik ben aan het op starten.')
+        log = open("log_%s.txt" % PERSON_ID, "a")
+        log.write('Nao said: Ik ben aan het op starten.\n')
+        log.close()
         #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.LYINGBACK)
         #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.STAND)
         # Execute that_tickles call each time the middle tactile is touched
@@ -40,10 +47,16 @@ class Example:
         """Callback function for touch listener. Everytime the MiddleTactilTouched event is generated, this
          callback function is called, making the robot say 'That tickles!'"""
         col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
-        self.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR, data=col)
+        if NAO_IS_OPPONENT == 0:
+            self.push_data('move_recommendation', 1, data=col)
+        else:
+            self.action_runner.run_action('say_animated', 'Ik help alleen als we samen een potje spelen')
+            log = open("log_%s.txt" % PERSON_ID, "a")
+            log.write('Nao said: Ik help alleen als we samen een potje spelen.\n')
+            log.close()
 
     def set_eye_color(self, color):
-        self.sic.set_eye_color(color)
+        self.action_runner.run_action('set_eye_color', color)
 
     def push_data(self, trigger, random_factor, **kwargs):
         if random_factor == 0:
@@ -52,35 +65,91 @@ class Example:
         random_variable = random.randint(1, random_factor)
         if random_factor / random_variable == 1:
             if trigger == 'players_turn':
-                self.action_runner.run_action('say_animated', random.choice(PLAYERS_TURN_STRING))
+                speech = random.choice(PLAYERS_TURN_STRING)
+                self.action_runner.run_action('say_animated', speech)
+                log = open("log_%s.txt" % PERSON_ID, "a")
+                log.write('Nao said: ' + str(speech) + '\n')
+                log.close()
             elif trigger == 'start':
-                self.action_runner.run_action('say_animated', random.choice(START_GAME_STRING))
+                speech = random.choice(START_GAME_STRING)
+                self.action_runner.run_action('say_animated', speech)
+                log = open("log_%s.txt" % PERSON_ID, "a")
+                log.write('Nao said: ' + str(speech) + '\n')
+                log.close()
+                '''
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Neutral_ENU_07')
+                self.action_runner.run_action('say', 'Center_Neutral_ENU_07')
                 sleep(3)
-                self.action_runner.run_action('say', 'hoi')
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Neutral_ENU_01')
+                self.action_runner.run_action('say', 'Center_Neutral_ENU_01')
                 sleep(3)
-                self.action_runner.run_action('do_gesture', 'Center_Neutral_AFF_01')
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Strong_ENU_01')
+                self.action_runner.run_action('say', 'Center_Strong_ENU_01')
                 sleep(3)
-                self.action_runner.run_action('say', 'hey')
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Neutral_EXC_03')
+                self.action_runner.run_action('say', 'Center_Neutral_EXC_03')
                 sleep(3)
-                self.action_runner.run_action('do_gesture', 'Center_Strong_AFF_06')
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Slow_EXC_03')
+                self.action_runner.run_action('say', 'Center_Slow_EXC_03')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Strong_EXC_03')
+                self.action_runner.run_action('say', 'Center_Strong_EXC_03')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Left_Strong_EXC_02')
+                self.action_runner.run_action('say', 'Left_Strong_EXC_02')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Neutral_QUE_10')
+                self.action_runner.run_action('say', 'Center_Neutral_QUE_10')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Neutral_ENU_07')
+                self.action_runner.run_action('say', 'Center_Neutral_ENU_07')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Right_Neutral_QUE_03')
+                self.action_runner.run_action('say', 'Right_Neutral_QUE_03')
+                sleep(3)
+                self.action_runner.run_action('do_gesture', 'animations/Stand/Enumeration/NAO/Center_Neutral_ENU_07')
+                self.action_runner.run_action('say', 'Center_Neutral_ENU_07')
+                sleep(3)
+                '''
                 if NAO_IS_OPPONENT:
-                    self.action_runner.run_action('say_animated', random.choice(START_GAME_WITH_NAO_STRING))
+                    speech = random.choice(START_GAME_WITH_NAO_STRING)
+                    self.action_runner.run_action('say_animated', speech)
+                    log = open("log_%s.txt" % PERSON_ID, "a")
+                    log.write('Nao said: ' + str(speech) + '\n')
+                    log.close()
                 else:
-                    self.action_runner.run_action('say_animated', random.choice(START_GAME_AGAINST_NAO_STRING))
+                    speech = random.choice(START_GAME_AGAINST_NAO_STRING)
+                    self.action_runner.run_action('say_animated', speech)
+                    log = open("log_%s.txt" % PERSON_ID, "a")
+                    log.write('Nao said: ' + str(speech) + '\n')
+                    log.close()
             elif trigger == 'move_recommendation':
                 data = int(data) + 1  # Add 1 to make it a human number
+                speech = 'Ik raad aan om in kolom ' + str(data) + ' te zetten'
+                log = open("log_%s.txt" % PERSON_ID, "a")
+                log.write('Nao said: Even denken \n')
+                log.write('Nao said: ' + str(speech) + '\n')
+                log.close()
                 self.action_runner.run_action('set_eye_color', 'blue')
                 self.action_runner.run_action('say_animated', 'Even denken')
                 self.action_runner.run_loaded_actions()
                 sleep(random.randint(2, 4))
-                self.action_runner.load_waiting_action('say_animated', 'Ik raad aan om in kolom ' + str(data) + ' te zetten')
-                self.action_runner.run_loaded_actions()
+                self.action_runner.run_action('say_animated', speech)
+                #self.action_runner.run_loaded_actions()
                 self.action_runner.run_action('set_eye_color', EYE_COLOR)
             elif trigger == 'game_over':
                 if data == 'lost':
-                    self.sic.say_animated(random.choice(END_GAME_LOSS_STRING))
+                    speech = random.choice(END_GAME_LOSS_STRING)
+                    self.action_runner.run_action('say_animated', speech)
+                    log = open("log_%s.txt" % PERSON_ID, "a")
+                    log.write('Nao said: ' + str(speech) + '\n')
+                    log.close()
                 elif data == 'won':
-                    self.sic.say_animated(random.choice(END_GAME_WIN_STRING))
+                    speech = random.choice(END_GAME_WIN_STRING)
+                    self.action_runner.run_action('say_animated', speech)
+                    log = open("log_%s.txt" % PERSON_ID, "a")
+                    log.write('Nao said: ' + str(speech) + '\n')
+                    log.close()
 
 
 nao = Example('192.168.0.105', 'nao')
@@ -90,13 +159,13 @@ nao.start()
 
 # Randomiser settings 1 = always trigger, 2 = 50% triggered, 3 = 33%, etc
 START_TRIGGER_FACTOR = 1
-MOVE_RECOMMENDATION_TRIGGER_FACTOR = 1
+MOVE_RECOMMENDATION_TRIGGER_FACTOR = 10
 GAME_OVER_WON_TRIGGER_FACTOR = 1
 GAME_OVER_LOST_TRIGGER_FACTOR = 1
 PLAYERS_TURN_TRIGGER_FACTOR = 5
 
 # Strings
-START_GAME_STRING = ['Hallo, ik ben Nao, om advies te krijgen over een zet druk op a']
+START_GAME_STRING = ['Hallo, ik ben Nao, om advies te krijgen over een zet druk op mijn hoofd']
 START_GAME_WITH_NAO_STRING = ['Ik heb er zin in', 'We pakken hem']
 START_GAME_AGAINST_NAO_STRING = ['Veel succes', 'Ik ben er klaar voor']
 PLAYERS_TURN_STRING = ['Jij bent aan de beurt', 'Jij mag nu', 'Nu ben jij aan zet']
@@ -120,10 +189,12 @@ AI_PIECE = 2
 
 WINDOW_LENGTH = 4
 
-
 def create_board():
     board = np.zeros((ROW_COUNT, COLUMN_COUNT))
-    nao.push_data('start', START_TRIGGER_FACTOR)
+    log = open("log_%s.txt" % PERSON_ID, "a")
+    log.write('Game difficulty: ' + str(GAME_DIFFICULTY) + '\n')
+    log.write('Nao mode: ' + str(NAO_IS_OPPONENT) + '\n')
+    log.close()
     return board
 
 
@@ -322,15 +393,18 @@ def draw_board(board):
     pygame.display.update()
 
 
-# Variables
-NAO_IS_OPPONENT = int(input("Voer 1 in om tegen Nao te spelen, voer 0 in om met Nao aan jou kant te spelen als vriend: "))
-GAME_DIFFICULTY = int(input("Voer een getal in tussen 1 (makkelijk) en 5 (moeilijk) om de moeilijkheidsgraad in te stellen: "))
+
+nao.push_data('start', START_TRIGGER_FACTOR)
+
 if NAO_IS_OPPONENT == 1:
     EYE_COLOR = str('magenta')
 else:
     EYE_COLOR = str('green')
 nao.set_eye_color(EYE_COLOR)
 
+log = open("log_%s.txt" % PERSON_ID, "a")
+log.write('Starting session \n')
+log.close()
 board = create_board()
 #print_board(board)
 game_over = False
@@ -353,6 +427,8 @@ pygame.display.update()
 myfont = pygame.font.SysFont("monospace", 75)
 
 turn = random.randint(PLAYER, AI)
+moves = 0
+winner = None
 
 while not game_over:
     for event in pygame.event.get():
@@ -370,6 +446,8 @@ while not game_over:
             posx = event.pos[0]
             if turn == PLAYER:
                 pygame.draw.circle(screen, RED, (posx, int(SQUARESIZE / 2)), RADIUS)
+                label = myfont.render("1     2     3     4     5     6     7", 1, YELLOW)
+                screen.blit(label, (40, 10))
 
         pygame.display.update()
 
@@ -387,12 +465,16 @@ while not game_over:
 
                     if winning_move(board, PLAYER_PIECE):
                         label = myfont.render("Jij hebt gewonnen!!", 1, RED)
-                        nao.push_data('game_over', GAME_OVER_WON_TRIGGER_FACTOR, data='won')
                         screen.blit(label, (40, 10))
+                        pygame.display.update()
+                        draw_board(board)
+                        nao.push_data('game_over', GAME_OVER_WON_TRIGGER_FACTOR, data='won')
+                        winner = 'Player'
                         game_over = True
 
                     turn += 1
                     turn = turn % 2
+                    moves += 1
 
                 #print_board(board)
                 draw_board(board)
@@ -413,8 +495,11 @@ while not game_over:
 
             if winning_move(board, AI_PIECE):
                 label = myfont.render("Je hebt verloren, volgende keer beter!", 1, YELLOW)
-                nao.push_data('game_over', GAME_OVER_LOST_TRIGGER_FACTOR, data='lost')
                 screen.blit(label, (40, 10))
+                pygame.display.update()
+                draw_board(board)
+                nao.push_data('game_over', GAME_OVER_LOST_TRIGGER_FACTOR, data='lost')
+                winner = 'Computer'
                 game_over = True
 
             #print_board(board)
@@ -422,9 +507,50 @@ while not game_over:
 
             turn += 1
             turn = turn % 2
+            moves += 1
             nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
+            col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
+            nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR, data=col)
 
     if game_over:
         print_board(board)
-        nao.stop()
-        pygame.time.wait(3000)
+        log = open("log_%s.txt" % PERSON_ID, "a")
+        log.write('Moves made: ' + str(moves) + '\n')
+        log.write('Winner: ' + str(winner) + '\n')
+        log.write('Game: \n' + str(np.flip(board, 0)) + '\n')
+        log.close()
+        GAME_DIFFICULTY += 1
+        sleep(3)
+        if GAME_DIFFICULTY < 6:
+            nao.action_runner.run_action('say_animated', 'We gaan nu spelen op moeilijkheidsgraad ' + str(GAME_DIFFICULTY))
+            board = create_board()
+            # print_board(board)
+            game_over = False
+
+            pygame.init()
+
+            SQUARESIZE = 100
+
+            width = COLUMN_COUNT * SQUARESIZE
+            height = (ROW_COUNT + 1) * SQUARESIZE
+
+            size = (width, height)
+
+            RADIUS = int(SQUARESIZE / 2 - 5)
+
+            screen = pygame.display.set_mode(size)
+            draw_board(board)
+            pygame.display.update()
+
+            myfont = pygame.font.SysFont("monospace", 75)
+
+            turn = random.randint(PLAYER, AI)
+            moves = 0
+            winner = None
+        else:
+            nao.action_runner.run_action('say_animated', 'Bedankt voor het spelen, vul de enquete in en vraag de onderzoeker naar de volgende stap')
+            nao.stop()
+            log = open("log_%s.txt" % PERSON_ID, "a")
+            log.write('End of session \n')
+            log.close()
+            pygame.time.wait(3000)
