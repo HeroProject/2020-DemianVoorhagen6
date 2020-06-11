@@ -11,10 +11,13 @@ from social_interaction_cloud.basic_connector import BasicSICConnector, BasicNao
 from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
-# Variables
-NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as bystander
+# EXPERIMENT VARIABLE
+NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
+
+# Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
 PERSON_ID = int(input("Voer je proef persoon ID in of vraag deze aan de onderzoeker: "))
+NAO_ADVICE_LEVEL = 5
 
 nao_recommended_move = 8  # moves are 0-6, use 8 as default because it matches no other values
 played_move_after_recommendation = 0
@@ -24,7 +27,11 @@ advice_followed = 0
 advice_not_followed = 0
 recommended_moves = []
 played_moves_after_recommendation = []
-EYE_COLOR = 'yellow'
+
+if NAO_IS_OPPONENT == 1:
+    EYE_COLOR = str('magenta')
+else:
+    EYE_COLOR = str('green')
 
 class Example:
 
@@ -37,10 +44,11 @@ class Example:
         self.action_runner.load_waiting_action('set_language', 'nl-NL')
         self.action_runner.load_waiting_action('wake_up')
         self.action_runner.run_loaded_actions()
+        self.action_runner.run_action('set_eye_color', EYE_COLOR)
         self.action_runner.run_waiting_action('set_breathing', True)
-        self.sic.say_animated('Ik ben aan het op starten.')
+        self.sic.say_animated('Ik ben wakker aan het worden.')
         log = open("log_%s.txt" % PERSON_ID, "a")
-        log.write('Nao said: Ik ben aan het op starten.\n')
+        log.write('Nao said: Ik ben wakker aan het worden.\n')
         log.close()
         #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.LYINGBACK)
         #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.STAND)
@@ -49,6 +57,11 @@ class Example:
 
     def stop(self):
         self.sic.unsubscribe_touch_listener('MiddleTactilTouched')
+        self.sic.say_animated('Ik ga weer slapen.')
+        self.action_runner.run_action('set_eye_color', 'white')
+        log = open("log_%s.txt" % PERSON_ID, "a")
+        log.write('Nao said: Ik ga weer slapen.\n')
+        log.close()
         self.sic.rest()
         self.sic.stop()
 
@@ -56,18 +69,13 @@ class Example:
     def give_advice(self):
         """Callback function for touch listener. Everytime the MiddleTactilTouched event is generated, this
          callback function is called, making the robot say 'That tickles!'"""
-        # TODO counter for robot touched
-        # TODO counter for total advices given
-        # TODO counter for advice not followed
-        global advice_asked, nao_recommended_move
+        global advice_asked
         advice_asked += 1
         log = open("log_%s.txt" % PERSON_ID, "a")
         log.write(str('Nao touched for advice') + '\n')
         log.close()
         if NAO_IS_OPPONENT == 0:
-            col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
-            nao_recommended_move = int(col)
-            self.push_data('move_recommendation', 1, data=col)
+            self.push_data('move_recommendation', 1)
         else:
             self.push_data('faulty_move_recommendation', 1)
 
@@ -75,7 +83,11 @@ class Example:
         self.action_runner.run_action('set_eye_color', color)
 
     def push_data(self, trigger, random_factor, **kwargs):
-        global advice_given, recommended_moves
+        global advice_given, recommended_moves, nao_recommended_move, EYE_COLOR
+        if NAO_IS_OPPONENT == 1:
+            EYE_COLOR = str('magenta')
+        else:
+            EYE_COLOR = str('green')
         if random_factor == 0:
             return
         data = kwargs.get('data', None)
@@ -84,43 +96,66 @@ class Example:
             if trigger == 'players_turn':
                 speech = random.choice(PLAYERS_TURN_STRING)
             elif trigger == 'start':
-                speech = random.choice(START_GAME_STRING)
+                if NAO_IS_OPPONENT == 1:
+                    speech = str('Hallo, ik ben Nao')
+                else:
+                    speech = str('Hallo, ik ben Nao, om advies te krijgen over een zet druk op de ronde knop op mijn hoofd')
                 self.action_runner.run_action('say_animated', speech)
                 log = open("log_%s.txt" % PERSON_ID, "a")
                 log.write('Nao said: ' + str(speech) + '\n')
                 log.close()
-                if NAO_IS_OPPONENT:
+                if NAO_IS_OPPONENT == 0:
                     speech = random.choice(START_GAME_WITH_NAO_STRING)
                 else:
                     speech = random.choice(START_GAME_AGAINST_NAO_STRING)
             elif trigger == 'move_recommendation':
-                recommended_moves.append(int(data))
-                advice_given += 1
-                data = int(data) + 1  # Add 1 to make it a human number
-                speech = 'Ik raad aan om in kolom ' + str(data) + ' te zetten'
+                global col, minimax_score, board
                 self.action_runner.run_action('set_eye_color', 'blue')
                 self.action_runner.run_action('say_animated', 'Even denken')
                 self.action_runner.run_loaded_actions()
+                sleep(1)
                 log = open("log_%s.txt" % PERSON_ID, "a")
                 log.write('Nao said: Even denken \n')
                 log.close()
-                sleep(random.randint(2, 4))
+                col, minimax_score = minimax(board, NAO_ADVICE_LEVEL, -math.inf, math.inf, True)
+                nao_recommended_move = int(col)
+                data = int(col) + 1  # Add 1 to make it a human number
+                speech = 'Ik raad aan om in kolom ' + str(data) + ' te zetten'
+                recommended_moves.append(nao_recommended_move)
+                advice_given += 1
             elif trigger == 'faulty_move_recommendation':
                 speech = 'Ik help alleen als we samen een potje spelen'
             elif trigger == 'game_over':
                 if data == 'lost':
-                    speech = random.choice(END_GAME_LOSS_STRING)
+                    if NAO_IS_OPPONENT == 1:
+                        speech = random.choice(END_GAME_PLAYER_LOST_NAO_WIN_STRING)
+                        self.action_runner.run_action('do_gesture',
+                                                      'animations/Stand/Exclamation/NAO/Right_Strong_EXC_03')
+                    else:
+                        speech = random.choice(END_GAME_PLAYER_LOST_NAO_LOST_STRING)
+                        self.action_runner.run_action('do_gesture',
+                                                      'animations/Stand/Negation/NAO/Center_Neutral_NEG_01')
                 elif data == 'won':
-                    speech = random.choice(END_GAME_WIN_STRING)
+                    if NAO_IS_OPPONENT == 1:
+                        speech = random.choice(END_GAME_PLAYER_WIN_NAO_LOST_STRING)
+                        self.action_runner.run_action('do_gesture',
+                                                      'animations/Stand/Negation/NAO/Center_Neutral_NEG_01')
+                        EYE_COLOR = 'red'
+                    else:
+                        speech = random.choice(END_GAME_PLAYER_WIN_NAO_WIN_STRING)
+                        self.action_runner.run_action('do_gesture',
+                                                      'animations/Stand/Exclamation/NAO/Right_Strong_EXC_03')
             self.action_runner.run_action('say_animated', speech)
-            self.action_runner.run_action('set_eye_color', EYE_COLOR)
             log = open("log_%s.txt" % PERSON_ID, "a")
             log.write('Nao said: ' + str(speech) + '\n')
             log.close()
+        self.action_runner.run_action('set_eye_color', EYE_COLOR)
 
 
 nao = Example('192.168.0.105', 'nao')
 nao.start()
+nao.set_eye_color(EYE_COLOR)
+
 
 # End of robot part
 
@@ -132,12 +167,13 @@ GAME_OVER_LOST_TRIGGER_FACTOR = 1
 PLAYERS_TURN_TRIGGER_FACTOR = 5
 
 # Strings
-START_GAME_STRING = ['Hallo, ik ben Nao, om advies te krijgen over een zet druk op mijn hoofd']
 START_GAME_WITH_NAO_STRING = ['Ik heb er zin in', 'We pakken hem']
 START_GAME_AGAINST_NAO_STRING = ['Veel succes', 'Ik ben er klaar voor']
 PLAYERS_TURN_STRING = ['Jij bent aan de beurt', 'Jij mag nu', 'Nu ben jij aan zet']
-END_GAME_WIN_STRING = ['Goed gedaan!', 'Je hebt goed gespeeld', 'Volgende keer een niveau hoger?']
-END_GAME_LOSS_STRING = ['Volgende keer beter!', 'Jammer! Je kan volgende keer ook een niveau lager spelen']
+END_GAME_PLAYER_WIN_NAO_LOST_STRING = ['Jammer... Goed gedaan!', 'Je hebt goed gespeeld', 'Volgende keer ga ik winnen']
+END_GAME_PLAYER_WIN_NAO_WIN_STRING = ['Goedzo, we hebben gewonnen!', 'Jippie dat ging goed!']
+END_GAME_PLAYER_LOST_NAO_LOST_STRING = ['Volgende keer pakken we hem', 'Jammer! Goed geprobeerd']
+END_GAME_PLAYER_LOST_NAO_WIN_STRING = ['Jippie ik heb gewonnen', 'Volgende keer iets beter je best doen!']
 
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
@@ -155,6 +191,8 @@ PLAYER_PIECE = 1
 AI_PIECE = 2
 
 WINDOW_LENGTH = 4
+
+nao.push_data('start', START_TRIGGER_FACTOR)
 
 def create_board():
     board = np.zeros((ROW_COUNT, COLUMN_COUNT))
@@ -360,15 +398,6 @@ def draw_board(board):
     pygame.display.update()
 
 
-
-nao.push_data('start', START_TRIGGER_FACTOR)
-
-if NAO_IS_OPPONENT == 1:
-    EYE_COLOR = str('magenta')
-else:
-    EYE_COLOR = str('green')
-nao.set_eye_color(EYE_COLOR)
-
 log = open("log_%s.txt" % PERSON_ID, "a")
 log.write('Starting session \n')
 log.close()
@@ -485,8 +514,8 @@ while not game_over:
             turn = turn % 2
             moves += 1
             nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
-            col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
-            nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR, data=col)
+            if NAO_IS_OPPONENT == 0:
+                nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR)
 
     if game_over:
         print_board(board)
@@ -498,7 +527,7 @@ while not game_over:
         log.write('Advices Asked: ' + str(advice_asked) + '\n')
         log.write('Advices Followed: ' + str(advice_followed) + '\n')
         log.write('Advices Not Followed: ' + str(advice_not_followed) + '\n')
-        log.write('Recommended moves: \n' + str(recommended_moves) + '\n')
+        log.write('Recommended Moves: \n' + str(recommended_moves) + '\n')
         log.write('Played Moves After Recommendations: \n' + str(played_moves_after_recommendation) + '\n')
         log.close()
         GAME_DIFFICULTY += 1
