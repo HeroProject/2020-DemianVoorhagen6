@@ -97,9 +97,10 @@ class Example:
                 speech = random.choice(PLAYERS_TURN_STRING)
             elif trigger == 'start':
                 if NAO_IS_OPPONENT == 1:
-                    speech = str('Hallo, ik ben Nao')
+                    speech = str('Hallo, ik ben Nao. Je kan een zet doen door te klikken op de rij waar je wilt zetten. ')
                 else:
-                    speech = str('Hallo, ik ben Nao, om advies te krijgen over een zet druk op de ronde knop op mijn hoofd')
+                    speech = str('Hallo, ik ben Nao. Je kan een zet doen door te klikken op de rij waar je wilt zetten. '
+                                 'Om advies te krijgen over een zet druk op de ronde knop op mijn hoofd')
                 self.action_runner.run_action('say_animated', speech)
                 log = open("log_%s.txt" % PERSON_ID, "a")
                 log.write('Nao said: ' + str(speech) + '\n')
@@ -118,11 +119,14 @@ class Example:
                 log.write('Nao said: Even denken \n')
                 log.close()
                 col, minimax_score = minimax(board, NAO_ADVICE_LEVEL, -math.inf, math.inf, True)
-                nao_recommended_move = int(col)
-                data = int(col) + 1  # Add 1 to make it a human number
-                speech = 'Ik raad aan om in kolom ' + str(data) + ' te zetten'
-                recommended_moves.append(nao_recommended_move)
-                advice_given += 1
+                if type(col) == int:
+                    nao_recommended_move = int(col)
+                    data = int(col) + 1  # Add 1 to make it a human number
+                    speech = 'Ik raad aan om in kolom ' + str(data) + ' te zetten'
+                    recommended_moves.append(nao_recommended_move)
+                    advice_given += 1
+                else:
+                    speech = 'Ik kan je helaas niet helpen'
             elif trigger == 'faulty_move_recommendation':
                 speech = 'Ik help alleen als we samen een potje spelen'
             elif trigger == 'game_over':
