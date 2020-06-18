@@ -3,6 +3,7 @@ import random
 import pygame
 import sys
 import math
+import csv
 from time import sleep
 
 #Start of robot part
@@ -52,7 +53,7 @@ class Example:
         log.write('Nao said: Ik ben wakker aan het worden.\n')
         log.close()
         #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.LYINGBACK)
-        #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.STAND)
+        #self.action_runner.run_waiting_action('go_to_posture', BasicNaoPosture.SIT)
         # Execute that_tickles call each time the middle tactile is touched
         self.sic.subscribe_touch_listener('MiddleTactilTouched', self.give_advice)
 
@@ -199,10 +200,6 @@ nao.push_data('start', START_TRIGGER_FACTOR)
 
 def create_board():
     board = np.zeros((ROW_COUNT, COLUMN_COUNT))
-    log = open("log_%s.txt" % PERSON_ID, "a")
-    log.write('Game difficulty: ' + str(GAME_DIFFICULTY) + '\n')
-    log.write('Nao mode: ' + str(NAO_IS_OPPONENT) + '\n')
-    log.close()
     return board
 
 
@@ -517,7 +514,6 @@ while not game_over:
             turn = turn % 2
             moves += 1
             nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
-            print(let_nao_advice_in)
             if NAO_IS_OPPONENT == 0:
                 let_nao_advice_in -= 1
                 if let_nao_advice_in == 0:
@@ -527,8 +523,31 @@ while not game_over:
 
     if game_over:
         print_board(board)
+        fieldnames = ['PERSON_ID', 'NAO_IS_OPPONENT', 'GAME_DIFFICULTY', 'moves', 'winner', 'advice_given',
+                      'advice_asked', 'advice_followed', 'advice_not_followed', 'recommended_moves',
+                      'played_moves_after_recommendation']
         log = open("log_%s.txt" % PERSON_ID, "a")
-        log.write('Moves made: ' + str(moves) + '\n')
+        csv_person = open("log_%s_csv.csv" % PERSON_ID, "a")
+        csv_master = open("master_csv_log.csv", "w")
+        person_writer = csv.DictWriter(csv_person, fieldnames=fieldnames)
+        master_writer = csv.DictWriter(csv_master, fieldnames=fieldnames)
+        person_writer.writeheader()
+        master_writer.writeheader()
+        person_writer.writerow({'PERSON_ID' : PERSON_ID, 'NAO_IS_OPPONENT' : NAO_IS_OPPONENT,
+                                'GAME_DIFFICULTY' : GAME_DIFFICULTY, 'moves' : moves, 'winner' : winner,
+                                'advice_given' : advice_given, 'advice_asked' : advice_asked,
+                                'advice_followed' : advice_followed, 'advice_not_followed' : advice_not_followed,
+                                'recommended_moves' : recommended_moves,
+                                'played_moves_after_recommendation': played_moves_after_recommendation})
+        master_writer.writerow({'PERSON_ID' : PERSON_ID, 'NAO_IS_OPPONENT' : NAO_IS_OPPONENT,
+                                'GAME_DIFFICULTY' : GAME_DIFFICULTY, 'moves' : moves, 'winner' : winner,
+                                'advice_given' : advice_given, 'advice_asked' : advice_asked,
+                                'advice_followed' : advice_followed, 'advice_not_followed' : advice_not_followed,
+                                'recommended_moves' : recommended_moves,
+                                'played_moves_after_recommendation': played_moves_after_recommendation})
+        log.write('Game difficulty: ' + str(GAME_DIFFICULTY) + '\n')
+        log.write('Nao mode: ' + str(NAO_IS_OPPONENT) + '\n')
+        log.write('Total moves: ' + str(moves) + '\n')
         log.write('Winner: ' + str(winner) + '\n')
         log.write('Game: \n' + str(np.flip(board, 0)) + '\n')
         log.write('Advices Given: ' + str(advice_given) + '\n')
@@ -538,6 +557,8 @@ while not game_over:
         log.write('Recommended Moves: \n' + str(recommended_moves) + '\n')
         log.write('Played Moves After Recommendations: \n' + str(played_moves_after_recommendation) + '\n')
         log.close()
+        csv_person.close()
+        csv_master.close()
         GAME_DIFFICULTY += 1
         sleep(3)
         if GAME_DIFFICULTY < 6:
