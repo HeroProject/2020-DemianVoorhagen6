@@ -5,6 +5,7 @@ import sys
 import math
 import csv
 from time import sleep
+import os
 
 #Start of robot part
 
@@ -19,6 +20,7 @@ NAO_IS_OPPONENT = 0  # 1 against Nao, 0 with Nao as friend
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
 PERSON_ID = int(input("Voer je proef persoon ID in of vraag deze aan de onderzoeker: "))
 NAO_ADVICE_LEVEL = 5
+IP_NAO = '192.168.0.105'
 
 nao_recommended_move = 8  # moves are 0-6, use 8 as default because it matches no other values
 played_move_after_recommendation = 0
@@ -128,7 +130,7 @@ class Example:
                     recommended_moves.append(nao_recommended_move)
                     advice_given += 1
                 else:
-                    speech = 'Ik kan je helaas niet helpen'
+                    speech = 'Als je advies over een zet wilt hebben, druk dan op de ronde knop midden op mijn hoofd'
             elif trigger == 'game_over':
                 if data == 'lost':
                     if NAO_IS_OPPONENT == 1:
@@ -156,7 +158,7 @@ class Example:
         self.action_runner.run_action('set_eye_color', EYE_COLOR)
 
 
-nao = Example('192.168.0.105', 'nao')
+nao = Example(IP_NAO, 'nao')
 nao.start()
 nao.set_eye_color(EYE_COLOR)
 
@@ -168,15 +170,16 @@ START_TRIGGER_FACTOR = 1
 MOVE_RECOMMENDATION_TRIGGER_FACTOR = 1
 GAME_OVER_WON_TRIGGER_FACTOR = 1
 GAME_OVER_LOST_TRIGGER_FACTOR = 1
-PLAYERS_TURN_TRIGGER_FACTOR = 5
+PLAYERS_TURN_TRIGGER_FACTOR = 7
 
 # Strings
-START_GAME_WITH_NAO_STRING = ['Ik heb er zin in', 'We pakken hem']
-START_GAME_AGAINST_NAO_STRING = ['Veel succes', 'Ik ben er klaar voor']
+START_GAME_WITH_NAO_STRING = ['We pakken hem', 'Samen staan we sterk', 'We kunnen hem makkelijk verslaan']
+START_GAME_AGAINST_NAO_STRING = ['Veel succes, ik ben er klaar voor', 'Ik ga proberen je in te maken hihi',
+                                 'Ik ben benieuwd of je me kan verslaan']
 PLAYERS_TURN_STRING = ['Jij bent aan de beurt', 'Jij mag nu', 'Nu ben jij aan zet']
-END_GAME_PLAYER_WIN_NAO_LOST_STRING = ['Jammer... Goed gedaan!', 'Je hebt goed gespeeld', 'Volgende keer ga ik winnen']
+END_GAME_PLAYER_WIN_NAO_LOST_STRING = ['Jammer... Goed gedaan!', 'Goed gespeeld! Volgende keer ga ik winnen']
 END_GAME_PLAYER_WIN_NAO_WIN_STRING = ['Goedzo, we hebben gewonnen!', 'Jippie dat ging goed!']
-END_GAME_PLAYER_LOST_NAO_LOST_STRING = ['Volgende keer pakken we hem', 'Jammer! Goed geprobeerd']
+END_GAME_PLAYER_LOST_NAO_LOST_STRING = ['Volgende keer pakken we hem', 'Jammer! We hebben het geprobeerd']
 END_GAME_PLAYER_LOST_NAO_WIN_STRING = ['Jippie ik heb gewonnen', 'Volgende keer iets beter je best doen!']
 
 BLUE = (0, 0, 255)
@@ -520,31 +523,26 @@ while not game_over:
                     nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR)
                     let_nao_advice_in = random.randint(5, 10)
 
-
     if game_over:
         print_board(board)
+
         fieldnames = ['PERSON_ID', 'NAO_IS_OPPONENT', 'GAME_DIFFICULTY', 'moves', 'winner', 'advice_given',
                       'advice_asked', 'advice_followed', 'advice_not_followed', 'recommended_moves',
                       'played_moves_after_recommendation']
-        log = open("log_%s.txt" % PERSON_ID, "a")
+        person_file_exists = os.path.isfile("log_%s_csv.csv" % PERSON_ID)
         csv_person = open("log_%s_csv.csv" % PERSON_ID, "a")
-        csv_master = open("master_csv_log.csv", "w")
         person_writer = csv.DictWriter(csv_person, fieldnames=fieldnames)
-        master_writer = csv.DictWriter(csv_master, fieldnames=fieldnames)
-        person_writer.writeheader()
-        master_writer.writeheader()
-        person_writer.writerow({'PERSON_ID' : PERSON_ID, 'NAO_IS_OPPONENT' : NAO_IS_OPPONENT,
-                                'GAME_DIFFICULTY' : GAME_DIFFICULTY, 'moves' : moves, 'winner' : winner,
-                                'advice_given' : advice_given, 'advice_asked' : advice_asked,
-                                'advice_followed' : advice_followed, 'advice_not_followed' : advice_not_followed,
-                                'recommended_moves' : recommended_moves,
+        if not person_file_exists:
+            person_writer.writeheader()
+        person_writer.writerow({'PERSON_ID': PERSON_ID, 'NAO_IS_OPPONENT': NAO_IS_OPPONENT,
+                                'GAME_DIFFICULTY': GAME_DIFFICULTY, 'moves': moves, 'winner': winner,
+                                'advice_given': advice_given, 'advice_asked': advice_asked,
+                                'advice_followed': advice_followed, 'advice_not_followed': advice_not_followed,
+                                'recommended_moves': recommended_moves,
                                 'played_moves_after_recommendation': played_moves_after_recommendation})
-        master_writer.writerow({'PERSON_ID' : PERSON_ID, 'NAO_IS_OPPONENT' : NAO_IS_OPPONENT,
-                                'GAME_DIFFICULTY' : GAME_DIFFICULTY, 'moves' : moves, 'winner' : winner,
-                                'advice_given' : advice_given, 'advice_asked' : advice_asked,
-                                'advice_followed' : advice_followed, 'advice_not_followed' : advice_not_followed,
-                                'recommended_moves' : recommended_moves,
-                                'played_moves_after_recommendation': played_moves_after_recommendation})
+        csv_person.close()
+
+        log = open("log_%s.txt" % PERSON_ID, "a")
         log.write('Game difficulty: ' + str(GAME_DIFFICULTY) + '\n')
         log.write('Nao mode: ' + str(NAO_IS_OPPONENT) + '\n')
         log.write('Total moves: ' + str(moves) + '\n')
@@ -557,8 +555,6 @@ while not game_over:
         log.write('Recommended Moves: \n' + str(recommended_moves) + '\n')
         log.write('Played Moves After Recommendations: \n' + str(played_moves_after_recommendation) + '\n')
         log.close()
-        csv_person.close()
-        csv_master.close()
         GAME_DIFFICULTY += 1
         sleep(3)
         if GAME_DIFFICULTY < 6:
@@ -585,9 +581,20 @@ while not game_over:
             myfont = pygame.font.SysFont("monospace", 75)
 
             turn = random.randint(PLAYER, AI)
-            moves = 0
             winner = None
         else:
+            master_file_exists = os.path.isfile("master_csv_log.csv")
+            csv_master = open("master_csv_log.csv", "a")
+            master_writer = csv.DictWriter(csv_master, fieldnames=fieldnames)
+            if not master_file_exists:
+                master_writer.writeheader()
+            master_writer.writerow({'PERSON_ID': PERSON_ID, 'NAO_IS_OPPONENT': NAO_IS_OPPONENT,
+                                    'GAME_DIFFICULTY': GAME_DIFFICULTY, 'moves': moves, 'winner': winner,
+                                    'advice_given': advice_given, 'advice_asked': advice_asked,
+                                    'advice_followed': advice_followed, 'advice_not_followed': advice_not_followed,
+                                    'recommended_moves': recommended_moves,
+                                    'played_moves_after_recommendation': played_moves_after_recommendation})
+            csv_master.close()
             nao.action_runner.run_action('say_animated', 'Bedankt voor het spelen, vul de enquete in en vraag de onderzoeker naar de volgende stap')
             nao.stop()
             log = open("log_%s.txt" % PERSON_ID, "a")

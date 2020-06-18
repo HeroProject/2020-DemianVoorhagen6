@@ -1,0 +1,11 @@
+PERSON_ID,NAO_IS_OPPONENT,GAME_DIFFICULTY,moves,winner,advice_given,advice_asked,advice_followed,advice_not_followed,recommended_moves,played_moves_after_recommendation
+102,0,1,7,Player,0,0,0,0,[],[]
+102,0,2,14,Computer,1,0,0,1,[2],[0]
+102,0,3,18,Computer,2,0,0,2,"[2, 3]","[0, 0]"
+102,0,4,11,Computer,3,0,0,3,"[2, 3, 2]","[0, 0, 0]"
+102,0,5,8,Computer,3,0,0,3,"[2, 3, 2]","[0, 0, 0]"
+102,1,1,7,Player,0,0,0,0,[],[]
+102,1,2,13,Computer,0,0,0,0,[],[]
+102,1,3,18,Computer,0,0,0,0,[],[]
+102,1,4,18,Computer,0,0,0,0,[],[]
+102,1,5,18,Computer,0,0,0,0,[],[]
