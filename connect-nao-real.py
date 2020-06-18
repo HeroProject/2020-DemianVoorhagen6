@@ -12,7 +12,7 @@ from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
 # EXPERIMENT VARIABLE
-NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
+NAO_IS_OPPONENT = 0  # 1 against Nao, 0 with Nao as friend
 
 # Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
@@ -27,6 +27,7 @@ advice_followed = 0
 advice_not_followed = 0
 recommended_moves = []
 played_moves_after_recommendation = []
+let_nao_advice_in = 5
 
 if NAO_IS_OPPONENT == 1:
     EYE_COLOR = str('magenta')
@@ -77,7 +78,7 @@ class Example:
         if NAO_IS_OPPONENT == 0:
             self.push_data('move_recommendation', 1)
         else:
-            self.push_data('faulty_move_recommendation', 1)
+            return
 
     def set_eye_color(self, color):
         self.action_runner.run_action('set_eye_color', color)
@@ -127,8 +128,6 @@ class Example:
                     advice_given += 1
                 else:
                     speech = 'Ik kan je helaas niet helpen'
-            elif trigger == 'faulty_move_recommendation':
-                speech = 'Ik help alleen als we samen een potje spelen'
             elif trigger == 'game_over':
                 if data == 'lost':
                     if NAO_IS_OPPONENT == 1:
@@ -165,7 +164,7 @@ nao.set_eye_color(EYE_COLOR)
 
 # Randomiser settings 1 = always trigger, 2 = 50% triggered, 3 = 33%, etc
 START_TRIGGER_FACTOR = 1
-MOVE_RECOMMENDATION_TRIGGER_FACTOR = 10
+MOVE_RECOMMENDATION_TRIGGER_FACTOR = 1
 GAME_OVER_WON_TRIGGER_FACTOR = 1
 GAME_OVER_LOST_TRIGGER_FACTOR = 1
 PLAYERS_TURN_TRIGGER_FACTOR = 5
@@ -518,8 +517,13 @@ while not game_over:
             turn = turn % 2
             moves += 1
             nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
+            print(let_nao_advice_in)
             if NAO_IS_OPPONENT == 0:
-                nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR)
+                let_nao_advice_in -= 1
+                if let_nao_advice_in == 0:
+                    nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR)
+                    let_nao_advice_in = random.randint(5, 10)
+
 
     if game_over:
         print_board(board)
