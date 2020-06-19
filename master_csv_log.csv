@@ -2,3 +2,5 @@ PERSON_ID,NAO_IS_OPPONENT,GAME_DIFFICULTY,moves,winner,advice_given,advice_asked
 102,0,6,8,Computer,3,0,0,3,"[2, 3, 2]","[0, 0, 0]"
 102,1,6,18,Computer,0,0,0,0,[],[]
 103,0,6,18,Computer,3,0,2,1,"[0, 1, 1]","[1, 1, 1]"
+5;0;6;132;Computer;11;5;11;0;[1, 2, 2, 0];[1, 2, 2, 0]
+5;1;6;77;Computer;0;0;0;0;[];[]102,1,6,99,Computer,0,0,0,0,[],[]

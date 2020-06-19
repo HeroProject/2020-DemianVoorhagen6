@@ -14,7 +14,7 @@ from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
 # EXPERIMENT VARIABLE
-NAO_IS_OPPONENT = 0  # 1 against Nao, 0 with Nao as friend
+NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
 
 # Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
@@ -483,6 +483,8 @@ while not game_over:
                     turn += 1
                     turn = turn % 2
                     moves += 1
+                    if len(get_valid_locations(board)) == 0:
+                        game_over = True
 
                 #print_board(board)
                 draw_board(board)
@@ -495,7 +497,6 @@ while not game_over:
         # col = random.randint(0, COLUMN_COUNT-1)
         # col = pick_best_move(board, AI_PIECE)
         col, minimax_score = minimax(board, GAME_DIFFICULTY, -math.inf, math.inf, True)
-
         if is_valid_location(board, col):
             # pygame.time.wait(500)
             row = get_next_open_row(board, col)
@@ -516,12 +517,17 @@ while not game_over:
             turn += 1
             turn = turn % 2
             moves += 1
-            nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
+            if len(get_valid_locations(board)) == 0:
+                game_over = True
+            if not game_over:
+                nao.push_data('players_turn', PLAYERS_TURN_TRIGGER_FACTOR)
             if NAO_IS_OPPONENT == 0:
                 let_nao_advice_in -= 1
                 if let_nao_advice_in == 0:
                     nao.push_data('move_recommendation', MOVE_RECOMMENDATION_TRIGGER_FACTOR)
                     let_nao_advice_in = random.randint(5, 10)
+            label = myfont.render("1     2     3     4     5     6     7", 1, YELLOW)
+            screen.blit(label, (40, 10))
 
     if game_over:
         print_board(board)

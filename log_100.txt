@@ -1,0 +1,27 @@
+Nao said: Ik ben wakker aan het worden.
+Nao said: Hallo, ik ben Nao. Je kan een zet doen door te klikken op de rij waar je wilt zetten. 
+Nao said: Veel succes, ik ben er klaar voor
+Starting session 
+Nao said: Jij mag nu
+Nao said: Jippie ik heb gewonnen
+Game difficulty: 1
+Nao mode: 1
+Total moves: 29
+Winner: Computer
+Game: 
+[[0. 2. 1. 1. 1. 0. 0.]
+ [0. 2. 2. 2. 1. 0. 0.]
+ [2. 1. 1. 1. 2. 0. 0.]
+ [1. 2. 2. 2. 1. 0. 0.]
+ [2. 1. 2. 1. 2. 0. 0.]
+ [2. 1. 2. 2. 1. 1. 0.]]
+Advices Given: 0
+Advices Asked: 0
+Advices Followed: 0
+Advices Not Followed: 0
+Recommended Moves: 
+[]
+Played Moves After Recommendations: 
+[]
+Nao said: Nu ben jij aan zet
+Nao said: Ik ga weer slapen.
