@@ -1,0 +1,273 @@
+Nao said: Ik ben wakker aan het worden.
+Nao said: Hallo, ik ben Nao. Je kan een zet doen door te klikken op de rij waar je wilt zetten. 
+Nao said: Ik ga proberen je in te maken hihi
+Starting session 
+Nao said: Volgende keer iets beter je best doen!
+Game difficulty: 1
+Nao mode: 1
+Total moves: 7
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 1. 0. 0. 0.]
+ [1. 2. 2. 2. 2. 1. 0.]]
+Advices Given: 0
+Advices Asked: 0
+Advices Followed: 0
+Advices Not Followed: 0
+Recommended Moves: 
+[]
+Played Moves After Recommendations: 
+[]
+Nao said: Volgende keer iets beter je best doen!
+Game difficulty: 2
+Nao mode: 1
+Total moves: 20
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 2. 0. 0. 0.]
+ [0. 0. 2. 1. 1. 0. 0.]
+ [0. 0. 2. 2. 2. 2. 0.]
+ [0. 0. 1. 2. 1. 1. 1.]]
+Advices Given: 0
+Advices Asked: 0
+Advices Followed: 0
+Advices Not Followed: 0
+Recommended Moves: 
+[]
+Played Moves After Recommendations: 
+[]
+Nao said: Jij mag nu
+Nao said: Jij bent aan de beurt
+Nao said: Volgende keer iets beter je best doen!
+Game difficulty: 3
+Nao mode: 1
+Total moves: 43
+Winner: Computer
+Game: 
+[[0. 0. 0. 2. 1. 0. 0.]
+ [0. 1. 0. 2. 2. 0. 0.]
+ [0. 2. 0. 2. 2. 0. 0.]
+ [0. 2. 0. 1. 2. 1. 0.]
+ [0. 1. 1. 2. 1. 2. 0.]
+ [0. 1. 1. 2. 1. 1. 2.]]
+Advices Given: 0
+Advices Asked: 0
+Advices Followed: 0
+Advices Not Followed: 0
+Recommended Moves: 
+[]
+Played Moves After Recommendations: 
+[]
+Nao said: Jippie ik heb gewonnen
+Game difficulty: 4
+Nao mode: 1
+Total moves: 71
+Winner: Computer
+Game: 
+[[1. 0. 1. 2. 0. 0. 0.]
+ [2. 0. 2. 1. 2. 0. 0.]
+ [2. 0. 2. 2. 1. 0. 0.]
+ [2. 0. 2. 2. 2. 2. 0.]
+ [1. 0. 1. 1. 2. 1. 1.]
+ [1. 0. 1. 2. 1. 1. 1.]]
+Advices Given: 0
+Advices Asked: 0
+Advices Followed: 0
+Advices Not Followed: 0
+Recommended Moves: 
+[]
+Played Moves After Recommendations: 
+[]
+Nao said: Jij bent aan de beurt
+Nao said: Jij mag nu
+Nao said: Volgende keer iets beter je best doen!
+Game difficulty: 5
+Nao mode: 1
+Total moves: 98
+Winner: Computer
+Game: 
+[[0. 0. 0. 1. 1. 0. 0.]
+ [2. 0. 0. 2. 2. 0. 0.]
+ [1. 2. 0. 2. 2. 0. 0.]
+ [2. 1. 2. 1. 2. 1. 0.]
+ [2. 2. 1. 2. 1. 1. 0.]
+ [1. 1. 2. 2. 1. 1. 0.]]
+Advices Given: 0
+Advices Asked: 0
+Advices Followed: 0
+Advices Not Followed: 0
+Recommended Moves: 
+[]
+Played Moves After Recommendations: 
+[]
+Nao said: Ik ga weer slapen.
+End of session 
+Nao said: Ik ben wakker aan het worden.
+Nao said: Hallo, ik ben Nao. Je kan een zet doen door te klikken op de rij waar je wilt zetten. Om advies te krijgen over een zet druk op de ronde knop op mijn hoofd
+Nao said: We kunnen hem makkelijk verslaan
+Starting session 
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao touched for advice
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 5 te zetten
+Nao said: Jammer! We hebben het geprobeerd
+Game difficulty: 1
+Nao mode: 0
+Total moves: 15
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 2. 2. 2. 0. 0.]
+ [0. 0. 1. 1. 1. 0. 0.]
+ [0. 2. 2. 2. 2. 0. 0.]
+ [1. 1. 1. 2. 1. 0. 0.]]
+Advices Given: 12
+Advices Asked: 11
+Advices Followed: 2
+Advices Not Followed: 0
+Recommended Moves: 
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
+Played Moves After Recommendations: 
+[2, 3, 2, 4, 4, 0, 1]
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 5 te zetten
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 6 te zetten
+Nao said: Jij mag nu
+Nao said: Jij bent aan de beurt
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 7 te zetten
+Nao said: Goedzo, we hebben gewonnen!
+Game difficulty: 2
+Nao mode: 0
+Total moves: 53
+Winner: Player
+Game: 
+[[1. 2. 0. 2. 2. 1. 1.]
+ [2. 1. 0. 2. 1. 2. 2.]
+ [2. 1. 0. 2. 1. 1. 2.]
+ [1. 2. 0. 1. 2. 1. 1.]
+ [2. 2. 1. 2. 2. 2. 1.]
+ [1. 1. 2. 2. 1. 1. 1.]]
+Advices Given: 15
+Advices Asked: 11
+Advices Followed: 4
+Advices Not Followed: 1
+Recommended Moves: 
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 5, 6]
+Played Moves After Recommendations: 
+[2, 3, 2, 4, 4, 0, 1, 4, 3, 6, 4, 4, 1, 6, 6]
+Nao said: Nu ben jij aan zet
+Nao said: Jij mag nu
+Nao said: Jammer! We hebben het geprobeerd
+Game difficulty: 3
+Nao mode: 0
+Total moves: 68
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 2. 0. 0.]
+ [0. 0. 0. 2. 2. 0. 0.]
+ [0. 0. 0. 1. 2. 1. 0.]
+ [0. 0. 1. 2. 2. 1. 0.]
+ [0. 1. 2. 2. 1. 1. 0.]]
+Advices Given: 15
+Advices Asked: 11
+Advices Followed: 4
+Advices Not Followed: 1
+Recommended Moves: 
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 5, 6]
+Played Moves After Recommendations: 
+[2, 3, 2, 4, 4, 0, 1, 4, 3, 6, 4, 4, 1, 6, 6]
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 3 te zetten
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 2 te zetten
+Nao said: Jij mag nu
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 2 te zetten
+Nao said: Jammer! We hebben het geprobeerd
+Game difficulty: 4
+Nao mode: 0
+Total moves: 105
+Winner: Computer
+Game: 
+[[2. 1. 0. 2. 1. 1. 0.]
+ [2. 1. 0. 1. 2. 2. 1.]
+ [1. 1. 0. 2. 1. 1. 1.]
+ [2. 2. 0. 1. 1. 2. 2.]
+ [1. 2. 2. 2. 2. 1. 1.]
+ [2. 1. 2. 2. 1. 2. 2.]]
+Advices Given: 18
+Advices Asked: 11
+Advices Followed: 6
+Advices Not Followed: 2
+Recommended Moves: 
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 5, 6, 2, 1, 1]
+Played Moves After Recommendations: 
+[2, 3, 2, 4, 4, 0, 1, 4, 3, 6, 4, 4, 1, 6, 6, 4, 1, 1]
+Nao said: Nu ben jij aan zet
+Nao said: Even denken 
+Nao said: Ik raad aan om in kolom 4 te zetten
+Nao said: Nu ben jij aan zet
+Nao said: Nu ben jij aan zet
+Nao said: Jammer! We hebben het geprobeerd
+Game difficulty: 5
+Nao mode: 0
+Total moves: 121
+Winner: Computer
+Game: 
+[[0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 1. 0. 0. 0.]
+ [0. 0. 0. 2. 0. 2. 0.]
+ [0. 0. 2. 2. 2. 1. 0.]
+ [0. 0. 1. 2. 1. 1. 0.]
+ [0. 0. 2. 1. 1. 1. 2.]]
+Advices Given: 19
+Advices Asked: 11
+Advices Followed: 6
+Advices Not Followed: 3
+Recommended Moves: 
+[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 5, 6, 2, 1, 1, 3]
+Played Moves After Recommendations: 
+[2, 3, 2, 4, 4, 0, 1, 4, 3, 6, 4, 4, 1, 6, 6, 4, 1, 1, 4]
+Nao said: Ik ga weer slapen.
+End of session 

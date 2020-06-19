@@ -20,7 +20,7 @@ NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
 PERSON_ID = int(input("Voer je proef persoon ID in of vraag deze aan de onderzoeker: "))
 NAO_ADVICE_LEVEL = 5
-IP_NAO = '192.168.0.105'
+IP_NAO = '192.168.178.35'
 
 nao_recommended_move = 8  # moves are 0-6, use 8 as default because it matches no other values
 played_move_after_recommendation = 0
