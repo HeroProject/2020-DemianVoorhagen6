@@ -14,13 +14,13 @@ from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
 # EXPERIMENT VARIABLE
-NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
+NAO_IS_OPPONENT = 0  # 1 against Nao, 0 with Nao as friend
 
 # Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
-PERSON_ID = int(input("Voer je proef persoon ID in of vraag deze aan de onderzoeker: "))
+PERSON_ID = int(8)  # bart
 NAO_ADVICE_LEVEL = 5
-IP_NAO = '192.168.178.35'
+IP_NAO = '192.168.0.105'
 
 nao_recommended_move = 8  # moves are 0-6, use 8 as default because it matches no other values
 played_move_after_recommendation = 0
@@ -31,6 +31,11 @@ advice_not_followed = 0
 recommended_moves = []
 played_moves_after_recommendation = []
 let_nao_advice_in = 5
+
+player_wins = 0
+player_score = 0
+computer_wins = 0
+computer_score = 0
 
 if NAO_IS_OPPONENT == 1:
     EYE_COLOR = str('magenta')
@@ -478,6 +483,8 @@ while not game_over:
                         draw_board(board)
                         nao.push_data('game_over', GAME_OVER_WON_TRIGGER_FACTOR, data='won')
                         winner = 'Player'
+                        player_wins += 1
+                        player_score += (1 * GAME_DIFFICULTY)
                         game_over = True
 
                     turn += 1
@@ -509,6 +516,8 @@ while not game_over:
                 draw_board(board)
                 nao.push_data('game_over', GAME_OVER_LOST_TRIGGER_FACTOR, data='lost')
                 winner = 'Computer'
+                computer_wins += 1
+                computer_score += (1 * GAME_DIFFICULTY)
                 game_over = True
 
             #print_board(board)
@@ -595,7 +604,9 @@ while not game_over:
             if not master_file_exists:
                 master_writer.writeheader()
             master_writer.writerow({'PERSON_ID': PERSON_ID, 'NAO_IS_OPPONENT': NAO_IS_OPPONENT,
-                                    'GAME_DIFFICULTY': GAME_DIFFICULTY, 'moves': moves, 'winner': winner,
+                                    'moves': moves,
+                                    'player_wins': player_wins, 'player_score': player_score,
+                                    'computer_wins': computer_wins, 'computer_score': computer_score,
                                     'advice_given': advice_given, 'advice_asked': advice_asked,
                                     'advice_followed': advice_followed, 'advice_not_followed': advice_not_followed,
                                     'recommended_moves': recommended_moves,
