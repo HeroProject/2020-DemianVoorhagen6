@@ -20,7 +20,7 @@ TEST_MODE = False
 if TEST_MODE:
     PERSON_ID = int(106)
 else:
-    PERSON_ID = int(19)  # nou
+    PERSON_ID = int(21)  # bobby
 
 # Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
