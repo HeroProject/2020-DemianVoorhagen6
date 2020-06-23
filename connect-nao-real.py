@@ -15,10 +15,16 @@ from time import sleep
 
 # EXPERIMENT VARIABLE
 NAO_IS_OPPONENT = 0  # 1 against Nao, 0 with Nao as friend
+TEST_MODE = False
+
+if TEST_MODE:
+    PERSON_ID = int(106)
+else:
+    PERSON_ID = int(19)  # nou
 
 # Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
-PERSON_ID = int(8)  # bart
+
 NAO_ADVICE_LEVEL = 5
 IP_NAO = '192.168.0.105'
 
@@ -541,12 +547,12 @@ while not game_over:
     if game_over:
         print_board(board)
 
-        fieldnames = ['PERSON_ID', 'NAO_IS_OPPONENT', 'GAME_DIFFICULTY', 'moves', 'winner', 'advice_given',
-                      'advice_asked', 'advice_followed', 'advice_not_followed', 'recommended_moves',
-                      'played_moves_after_recommendation']
+        person_fieldnames = ['PERSON_ID', 'NAO_IS_OPPONENT', 'GAME_DIFFICULTY', 'moves', 'winner', 'advice_given',
+                             'advice_asked', 'advice_followed', 'advice_not_followed', 'recommended_moves',
+                             'played_moves_after_recommendation']
         person_file_exists = os.path.isfile("log_%s_csv.csv" % PERSON_ID)
         csv_person = open("log_%s_csv.csv" % PERSON_ID, "a")
-        person_writer = csv.DictWriter(csv_person, fieldnames=fieldnames)
+        person_writer = csv.DictWriter(csv_person, fieldnames=person_fieldnames)
         if not person_file_exists:
             person_writer.writeheader()
         person_writer.writerow({'PERSON_ID': PERSON_ID, 'NAO_IS_OPPONENT': NAO_IS_OPPONENT,
@@ -598,9 +604,12 @@ while not game_over:
             turn = random.randint(PLAYER, AI)
             winner = None
         else:
+            master_fieldnames = ['PERSON_ID', 'NAO_IS_OPPONENT', 'moves', 'player_wins', 'player_score',
+                                 'computer_wins', 'computer_score', 'advice_given', 'advice_asked', 'advice_followed',
+                                 'advice_not_followed', 'recommended_moves', 'played_moves_after_recommendation']
             master_file_exists = os.path.isfile("master_csv_log.csv")
             csv_master = open("master_csv_log.csv", "a")
-            master_writer = csv.DictWriter(csv_master, fieldnames=fieldnames)
+            master_writer = csv.DictWriter(csv_master, fieldnames=master_fieldnames)
             if not master_file_exists:
                 master_writer.writeheader()
             master_writer.writerow({'PERSON_ID': PERSON_ID, 'NAO_IS_OPPONENT': NAO_IS_OPPONENT,
