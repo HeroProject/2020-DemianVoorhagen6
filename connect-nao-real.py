@@ -14,7 +14,7 @@ from social_interaction_cloud.action import ActionRunner
 from time import sleep
 
 # EXPERIMENT VARIABLE
-NAO_IS_OPPONENT = 0  # 1 against Nao, 0 with Nao as friend
+NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
 TEST_MODE = False
 
 if TEST_MODE:
