@@ -1,3 +1,0 @@
-PERSON_ID,NAO_IS_OPPONENT,GAME_DIFFICULTY,moves,winner,advice_given,advice_asked,advice_followed,advice_not_followed,recommended_moves,played_moves_after_recommendation
-105,0,4,17,Computer,1,0,0,1,[0],[2]
-105,0,5,25,Computer,1,0,0,1,[0],[2]

@@ -15,12 +15,12 @@ from time import sleep
 
 # EXPERIMENT VARIABLE
 NAO_IS_OPPONENT = 1  # 1 against Nao, 0 with Nao as friend
-TEST_MODE = False
+TEST_MODE = True
 
 if TEST_MODE:
     PERSON_ID = int(106)
 else:
-    PERSON_ID = int(21)  # bobby
+    PERSON_ID = int(26)  # rayan
 
 # Game variables
 GAME_DIFFICULTY = 1  # 1 for easiest, 5 for hardest
@@ -169,9 +169,9 @@ class Example:
         self.action_runner.run_action('set_eye_color', EYE_COLOR)
 
 
-nao = Example(IP_NAO, 'nao')
-nao.start()
-nao.set_eye_color(EYE_COLOR)
+#nao = Example(IP_NAO, 'nao')
+#nao.start()
+#nao.set_eye_color(EYE_COLOR)
 
 
 # End of robot part
@@ -210,7 +210,7 @@ AI_PIECE = 2
 
 WINDOW_LENGTH = 4
 
-nao.push_data('start', START_TRIGGER_FACTOR)
+#nao.push_data('start', START_TRIGGER_FACTOR)
 
 def create_board():
     board = np.zeros((ROW_COUNT, COLUMN_COUNT))
@@ -439,7 +439,7 @@ myfont = pygame.font.SysFont("monospace", 75)
 turn = random.randint(PLAYER, AI)
 moves = 0
 winner = None
-nao.action_runner.run_action('say_animated', 'We gaan nu spelen op moeilijkheidsgraad ' + str(GAME_DIFFICULTY))
+#nao.action_runner.run_action('say_animated', 'We gaan nu spelen op moeilijkheidsgraad ' + str(GAME_DIFFICULTY))
 while not game_over:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
